@@ -49,7 +49,7 @@ Designed with a modern **.NET Core Web API** and **Blazor WebAssembly**, Forecas
 |Layer| Technology | Purpose
 |--|--|--|
 | Back-end | .NET Core 8 Web API (Latest LTS) |Provides RESTful endpoints
-| Front-end | Blazor WebAssembly (.NET 8) |Single-page application for interactive UIfor interactive UI
+| Front-end | Blazor WebAssembly (.NET 8) |Single-page application for interactive UI
 | Testing | xUnit + Moq |Unit testing for services and controllers
 | API| OpenWeatherMap + CountriesNow |Fetches coutries, cities, and live weather data
 
