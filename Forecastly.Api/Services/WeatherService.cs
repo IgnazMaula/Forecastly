@@ -68,6 +68,7 @@ namespace Forecastly.Api.Services
                 SkyMain = doc.RootElement.GetProperty("weather")[0].GetProperty("main").GetString(),
                 SkyDescription = doc.RootElement.GetProperty("weather")[0].GetProperty("description").GetString(),
                 Cloudiness = doc.RootElement.GetProperty("clouds").GetProperty("all").GetInt32(),
+                Icon = doc.RootElement.GetProperty("weather")[0].GetProperty("icon").GetString(),
 
                 // Sunrise / Sunset
                 Sunrise = DateTimeOffset.FromUnixTimeSeconds(doc.RootElement.GetProperty("sys").GetProperty("sunrise").GetInt64()).UtcDateTime,

@@ -17,7 +17,7 @@ a, .btn-link {
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 .content {
@@ -101,3 +101,139 @@ a, .btn-link {
 code {
     color: #c02d76;
 }
+
+.blazored-typeahead__results {
+    max-height: 300px !important;
+    overflow-y: auto !important;
+}
+
+
+/*Weather Page*/
+
+.weather-container {
+    text-align: center;
+    padding: 2rem;
+    background: linear-gradient(180deg, #1e90ff 0%, #87cefa 100%);
+    transition: background 0.8s ease-in-out;
+    border-radius: 1.5rem;
+    color: white;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.weather-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.weather-location h3 {
+    margin: 0;
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.weather-desc {
+    font-size: 1.1rem;
+    font-weight: 600;
+    opacity: 0.85;
+}
+
+.weather-time {
+    font-size: 1rem;
+    opacity: 0.8;
+    font-weight: 400;
+    margin-top: 0.3rem;
+    font-style: italic;
+}
+
+.weather-icon {
+    width: 200px;
+    height: 200px;
+}
+
+.weather-temp h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+}
+
+.secondary-temp {
+    font-size: 1.5rem;
+    opacity: 0.8;
+}
+
+.weather-details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1.2rem;
+    margin-top: 1.5rem;
+}
+
+.weather-detail {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 0.8rem;
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: background 0.2s ease-in-out;
+}
+
+    .weather-detail:hover {
+        background: rgba(255, 255, 255, 0.25);
+    }
+
+    .weather-detail i {
+        font-size: 1.3rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .weather-detail label {
+        font-size: 0.8rem;
+        opacity: 0.85;
+        margin-top: 0.2rem;
+    }
+
+/* Default blue gradient */
+.weather-container.default-bg {
+    background: linear-gradient(180deg, #1e90ff 0%, #87cefa 100%);
+}
+
+/* Clear / Sunny */
+.weather-container.sunny-bg {
+    background: linear-gradient(180deg, #1e90ff 0%, #87cefa 100%);
+    /*background: linear-gradient(180deg, #f9d423 0%, #ff4e50 100%);*/
+}
+
+/* Cloudy */
+.weather-container.cloudy-bg {
+    background: linear-gradient(180deg, #757f9a 0%, #d7dde8 100%);
+}
+
+/* Rainy */
+.weather-container.rainy-bg {
+    background: linear-gradient(180deg, #4b79a1 0%, #283e51 100%);
+}
+
+/* Drizzle */
+.weather-container.drizzle-bg {
+    background: linear-gradient(180deg, #89f7fe 0%, #66a6ff 100%);
+}
+
+/* Stormy / Thunderstorm */
+.weather-container.stormy-bg {
+    background: linear-gradient(180deg, #232526 0%, #414345 100%);
+}
+
+/* Snowy */
+.weather-container.snowy-bg {
+    background: linear-gradient(180deg, #83a4d4 0%, #b6fbff 100%);
+}
+
+/* Foggy / Misty / Hazy */
+.weather-container.foggy-bg {
+    background: linear-gradient(180deg, #bdc3c7 0%, #2c3e50 100%);
+}
+

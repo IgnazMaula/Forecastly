@@ -17,8 +17,15 @@ namespace Forecastly.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCountries()
         {
-            var countries = await _countryService.GetCountriesAsync();
-            return Ok(countries);
+            try
+            {
+                var countries = await _countryService.GetCountriesAsync();
+                return Ok(countries);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpGet("{countryCode}/cities")]
@@ -28,15 +35,21 @@ namespace Forecastly.Api.Controllers
             {
                 return BadRequest("Country code is required.");
             }
-
-            var cities = await _countryService.GetCitiesByCountryCodeAsync(countryCode);
-
-            if (cities == null || !cities.Any())
+            try
             {
-                return NotFound($"No cities found for country code '{countryCode}'.");
-            }
+                var cities = await _countryService.GetCitiesByCountryCodeAsync(countryCode);
 
-            return Ok(cities);
+                if (cities == null || !cities.Any())
+                {
+                    return NotFound($"No cities found for country code '{countryCode}'.");
+                }
+
+                return Ok(cities);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

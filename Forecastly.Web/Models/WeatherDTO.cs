@@ -35,6 +35,7 @@
         public string SkyMain { get; set; }
         public string SkyDescription { get; set; }
         public int Cloudiness { get; set; }
+        public string Icon { get; set; }
 
         // Sun
         public DateTime Sunrise { get; set; }

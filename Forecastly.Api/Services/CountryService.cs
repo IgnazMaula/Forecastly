@@ -10,7 +10,7 @@ namespace Forecastly.Api.Services
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
 
-        private List<CountryModel> _countriesCache = new();
+        private List<CountryModel> Countries = new();
 
         public CountryService(HttpClient httpClient, IConfiguration configuration)
         {
@@ -18,32 +18,53 @@ namespace Forecastly.Api.Services
             _configuration = configuration;
         }
 
-        // Fetch data from countriesnow API once
-        private async Task EnsureDataLoadedAsync()
+        // Fetch data from countriesnow API
+        private async Task GetCountriesAndCities()
         {
-            if (_countriesCache.Any()) return;
+            if (Countries.Any()) return;
 
             string url = _configuration["ContriesNow:BaseUrl"];
-            var response = await _httpClient.GetAsync(url);
-            response.EnsureSuccessStatusCode();
 
-            var json = await response.Content.ReadAsStringAsync();
-            var apiResponse = JsonSerializer.Deserialize<CountriesApiResponse>(json, new JsonSerializerOptions
+            try
             {
-                PropertyNameCaseInsensitive = true
-            });
+                var response = await _httpClient.GetAsync(url);
+                response.EnsureSuccessStatusCode();
 
-            if (!apiResponse.Error && apiResponse.Data != null)
-            {
-                _countriesCache = apiResponse.Data;
+                var json = await response.Content.ReadAsStringAsync();
+                var apiResponse = JsonSerializer.Deserialize<CountriesApiResponse>(json, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+
+                if (!apiResponse.Error && apiResponse.Data != null)
+                {
+                    Countries = apiResponse.Data;
+                }
             }
+            catch (Exception ex)
+            {
+                // Fetch data from offline data if api failing
+                string offlineFilePath = Path.Combine(AppContext.BaseDirectory, "Data", "countries-offline.json");
+
+                var offlineJson = await File.ReadAllTextAsync(offlineFilePath);
+                var offlineData = JsonSerializer.Deserialize<CountriesApiResponse>(offlineJson, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+
+                if (offlineData != null && offlineData.Data != null)
+                {
+                    Countries = offlineData.Data;
+                }
+            }
+
         }
 
         public async Task<List<CountryDTO>> GetCountriesAsync()
         {
-            await EnsureDataLoadedAsync();
+            await GetCountriesAndCities();
 
-            return _countriesCache
+            return Countries
                 .Select(c => new CountryDTO
                 {
                     Iso2 = c.Iso2,
@@ -55,8 +76,8 @@ namespace Forecastly.Api.Services
 
         public async Task<List<string>> GetCitiesByCountryCodeAsync(string countryCode)
         {
-            await EnsureDataLoadedAsync();
-            var country = _countriesCache.FirstOrDefault(c =>
+            await GetCountriesAndCities();
+            var country = Countries.FirstOrDefault(c =>
                 c.Iso2.Equals(countryCode, StringComparison.OrdinalIgnoreCase));
             return country?.Cities ?? new List<string>();
         }

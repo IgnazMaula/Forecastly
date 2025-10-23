@@ -1,42 +1,128 @@
 ﻿@page "/"
 
-<h3>Weather Forecast</h3>
+<PageHeader Title="Weather Forecast">
+</PageHeader>
 
-<div class="form-group">
-    <label>Country:</label>
-    <select @onchange="OnCountryChanged" class="form-control">
-        <option value="">Select Country</option>
-        @foreach (var country in Countries)
-        {
-            <option value="@country.Iso2">@country.Name</option>
-        }
-    </select>
-</div>
+<Container>
+    <Row>
+        <Column>
+            <Card>
+                <CardHeader>Location</CardHeader>
+                <CardBody>
+                    <Row>
+                        <Column class="col-sm-6">
+                            <label>Select Country</label>
+                            <BlazoredTypeahead SearchMethod="SearchCountries"
+                                               TItem="CountryDTO"
+                                               TValue="CountryDTO"
+                                               ShowDropDownOnFocus="true"
+                                               MaximumSuggestions="100"
+                                               @bind-Value="SelectedCountry"
+                                               Placeholder="Search country...">
+                                <SelectedTemplate>
+                                    <div class="d-flex align-items-center">
+                                        <img src="@GetFlagUrl(context.Iso2)" width="20" class="me-2" />
+                                        <span>@context.Name</span>
+                                    </div>
+                                </SelectedTemplate>
+                                <ResultTemplate>
+                                    <div class="d-flex align-items-center">
+                                        <img src="@GetFlagUrl(context.Iso2)" width="20" class="me-2" />
+                                        <span>@context.Name</span>
+                                    </div>
+                                </ResultTemplate>
+                            </BlazoredTypeahead>
+                        </Column>
+                        <Column class="col-sm-6">
+                            <label>Select City</label>
+                            <BlazoredTypeahead @key="SelectedCountry?.Iso2"
+                                               SearchMethod="SearchCities"
+                                               TItem="string"
+                                               TValue="string"
+                                               ShowDropDownOnFocus="true"
+                                               MaximumSuggestions="100"
+                                               @bind-Value="SelectedCity"
+                                               Disabled="@(Cities == null || !Cities.Any())"
+                                               Placeholder="Search city...">
+                                <SelectedTemplate>@context</SelectedTemplate>
+                                <ResultTemplate>@context</ResultTemplate>
+                            </BlazoredTypeahead>
+                        </Column>
+                    </Row>
+                </CardBody>
+            </Card>
+            @if (Weather != null)
+            {
+                <div class="@GetWeatherBackgroundClass() mb-5">
+                    <div class="weather-header">
+                        <div class="weather-location">
+                            <div class="weather-title d-flex align-items-center justify-content-center">
+                                <h3 class="mb-0 me-2">@Weather.City, @Weather.Country</h3>
+                                <img src="@GetFlagUrlWeather(Weather.Country)" width="40" class="flag-icon" />
+                            </div>
 
-<div class="form-group">
-    <label>City:</label>
-    <select @onchange="OnCityChanged" class="form-control" disabled="@(!Cities.Any())">
-        <option value="">Select City</option>
-        @foreach (var city in Cities)
-        {
-            <option value="@city">@city</option>
-        }
-    </select>
-</div>
+                            <p class="weather-desc">@Weather.SkyMain - @Weather.SkyDescription</p>
+                        </div>
+                        <p class="weather-time">UTC Time: @Weather.TimeUtc.ToString("yyyy-MM-dd HH:mm")</p>
+                    </div>
 
-@if (Weather != null)
-{
-    <div class="weather-info">
-        <h4>@Weather.City, @Weather.Country</h4>
-        <p>Temperature: @Weather.TempC &deg;C / @Weather.TempF &deg;F</p>
-        <p>Feels Like: @Weather.FeelsLikeC &deg;C / @Weather.FeelsLikeF &deg;F</p>
-        <p>Sky: @Weather.SkyMain - @Weather.SkyDescription</p>
-        <p>Wind: @Weather.WindSpeed m/s, @Weather.WindDirection &deg;</p>
-        <p>Humidity: @Weather.Humidity %</p>
-        <p>Pressure: @Weather.Pressure hPa</p>
-        <p>Visibility: @Weather.Visibility m</p>
-        <p>Dew Point: @Weather.DewPoint &deg;C</p>
-        <p>Sunrise: @Weather.Sunrise.ToLocalTime().ToShortTimeString()</p>
-        <p>Sunset: @Weather.Sunset.ToLocalTime().ToShortTimeString()</p>
-    </div>
-}
+                    <div class="weather-temp">
+                        <img class="weather-icon" src="@($"https://openweathermap.org/img/wn/{Weather.Icon}@4x.png")" alt="Weather Icon" />
+                        <h1>@Weather.TempC &deg;C</h1>
+                        <p>Feels like @Weather.FeelsLikeC &deg;C</p>
+                        <span class="secondary-temp">(@Weather.TempF &deg;F)</span>
+                    </div>
+
+                    <div class="weather-details-grid">
+                        <div class="weather-detail">
+                            <i class="fa-solid fa-wind"></i>
+                            <span>@Weather.WindSpeed m/s</span>
+                            <label>Wind Speed</label>
+                        </div>
+                        <div class="weather-detail">
+                            <i class="fa-solid fa-compass"></i>
+                            <span>@Weather.WindDirection °</span>
+                            <label>Wind Direction</label>
+                        </div>
+                        <div class="weather-detail">
+                            <i class="fa-solid fa-droplet"></i>
+                            <span>@Weather.Humidity %</span>
+                            <label>Humidity</label>
+                        </div>
+                        <div class="weather-detail">
+                            <i class="fa-solid fa-gauge"></i>
+                            <span>@Weather.Pressure hPa</span>
+                            <label>Pressure</label>
+                        </div>
+                        <div class="weather-detail">
+                            <i class="fa-solid fa-eye"></i>
+                            <span>@Weather.Visibility m</span>
+                            <label>Visibility</label>
+                        </div>
+                        <div class="weather-detail">
+                            <i class="fa-solid fa-temperature-low"></i>
+                            <span>@Weather.DewPoint &deg;C</span>
+                            <label>Dew Point</label>
+                        </div>
+                        <div class="weather-detail">
+                            <i class="fa-solid fa-sun"></i>
+                            <span>@Weather.Sunrise.ToLocalTime().ToShortTimeString()</span>
+                            <label>Sunrise</label>
+                        </div>
+                        <div class="weather-detail">
+                            <i class="fa-solid fa-moon"></i>
+                            <span>@Weather.Sunset.ToLocalTime().ToShortTimeString()</span>
+                            <label>Sunset</label>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="card p-3 d-flex align-items-center justify-content-center text-muted placeholder-card">
+                    <span>No weather data yet</span>
+                </div>
+            }
+        </Column>
+    </Row>
+</Container>
