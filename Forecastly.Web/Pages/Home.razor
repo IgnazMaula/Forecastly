@@ -1,0 +1,42 @@
+﻿@page "/"
+
+<h3>Weather Forecast</h3>
+
+<div class="form-group">
+    <label>Country:</label>
+    <select @onchange="OnCountryChanged" class="form-control">
+        <option value="">Select Country</option>
+        @foreach (var country in Countries)
+        {
+            <option value="@country.Iso2">@country.Name</option>
+        }
+    </select>
+</div>
+
+<div class="form-group">
+    <label>City:</label>
+    <select @onchange="OnCityChanged" class="form-control" disabled="@(!Cities.Any())">
+        <option value="">Select City</option>
+        @foreach (var city in Cities)
+        {
+            <option value="@city">@city</option>
+        }
+    </select>
+</div>
+
+@if (Weather != null)
+{
+    <div class="weather-info">
+        <h4>@Weather.City, @Weather.Country</h4>
+        <p>Temperature: @Weather.TempC &deg;C / @Weather.TempF &deg;F</p>
+        <p>Feels Like: @Weather.FeelsLikeC &deg;C / @Weather.FeelsLikeF &deg;F</p>
+        <p>Sky: @Weather.SkyMain - @Weather.SkyDescription</p>
+        <p>Wind: @Weather.WindSpeed m/s, @Weather.WindDirection &deg;</p>
+        <p>Humidity: @Weather.Humidity %</p>
+        <p>Pressure: @Weather.Pressure hPa</p>
+        <p>Visibility: @Weather.Visibility m</p>
+        <p>Dew Point: @Weather.DewPoint &deg;C</p>
+        <p>Sunrise: @Weather.Sunrise.ToLocalTime().ToShortTimeString()</p>
+        <p>Sunset: @Weather.Sunset.ToLocalTime().ToShortTimeString()</p>
+    </div>
+}

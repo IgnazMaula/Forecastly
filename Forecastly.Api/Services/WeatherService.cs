@@ -112,19 +112,18 @@ namespace Forecastly.Api.Services
                 WindSpeed = 5,
                 WindDirection = 180,
 
-                // Weather / Clouds
+                // Weather conditions
                 SkyMain = "Clear",
                 SkyDescription = "clear sky",
                 Cloudiness = 0,
 
+                // Sunrise / Sunset
+                Sunrise = DateTime.UtcNow.AddHours(-6),
+                Sunset = DateTime.UtcNow.AddHours(6),
 
                 // Coordinates
                 Longitude = 0,
-                Latitude = 0,
-
-                // Sun
-                Sunrise = DateTime.UtcNow.AddHours(-6),
-                Sunset = DateTime.UtcNow.AddHours(6)
+                Latitude = 0
             };
         }
 
