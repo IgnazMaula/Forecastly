@@ -36,6 +36,11 @@ Designed with a modern **.NET Core Web API** and **Blazor WebAssembly**, Forecas
     
 -   **Unit tested:** Covers temperature conversion, service calls, and controller endpoints.
 
+## Live Demo / Hosted Application
+
+- **Frontend (Blazor Web App):** [https://forecastly.azurewebsites.net](https://forecastly.azurewebsites.net)  
+- **Backend API (Swagger):** [https://forecastly-api.azurewebsites.net/swagger/index.html](https://forecastly-api.azurewebsites.net/swagger/index.html)
+
 ## Screenshots
 <img width="1920" height="1147" alt="screencapture-localhost-5002-2025-10-24-03_20_10" src="https://github.com/user-attachments/assets/aa653957-acbb-484f-a777-b2b9caab5698" />
 <img width="1920" height="1147" alt="screencapture-localhost-5002-2025-10-24-03_24_46" src="https://github.com/user-attachments/assets/ea96146b-8ec4-41d0-8cdb-b8fd1b86fb7d" />
@@ -49,7 +54,7 @@ Designed with a modern **.NET Core Web API** and **Blazor WebAssembly**, Forecas
 |Layer| Technology | Purpose
 |--|--|--|
 | Back-end | .NET Core 8 Web API (Latest LTS) |Provides RESTful endpoints
-| Front-end | Blazor WebAssembly (.NET 8) |Single-page application for interactive UIfor interactive UI
+| Front-end | Blazor WebAssembly (.NET 8) |Single-page application for interactive UI
 | Testing | xUnit + Moq |Unit testing for services and controllers
 | API| OpenWeatherMap + CountriesNow |Fetches coutries, cities, and live weather data
 
