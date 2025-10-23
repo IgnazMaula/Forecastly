@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forecastly.Api", "Forecastly.Api\Forecastly.Api.csproj", "{3ED549A9-9756-497B-8674-3DB5B609C34D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Forecastly.Api", "Forecastly.Api\Forecastly.Api.csproj", "{3ED549A9-9756-497B-8674-3DB5B609C34D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forecastly.Web", "Forecastly.Web\Forecastly.Web.csproj", "{90FF3072-5FF3-40B0-89B5-A5AEA48EB696}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Forecastly.Web", "Forecastly.Web\Forecastly.Web.csproj", "{90FF3072-5FF3-40B0-89B5-A5AEA48EB696}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forecastly.Api.Tests", "Forecastly.Api.Tests\Forecastly.Api.Tests.csproj", "{826130AD-FA62-4F96-ADF8-906A787A7FF2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{90FF3072-5FF3-40B0-89B5-A5AEA48EB696}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90FF3072-5FF3-40B0-89B5-A5AEA48EB696}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90FF3072-5FF3-40B0-89B5-A5AEA48EB696}.Release|Any CPU.Build.0 = Release|Any CPU
+		{826130AD-FA62-4F96-ADF8-906A787A7FF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{826130AD-FA62-4F96-ADF8-906A787A7FF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{826130AD-FA62-4F96-ADF8-906A787A7FF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{826130AD-FA62-4F96-ADF8-906A787A7FF2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

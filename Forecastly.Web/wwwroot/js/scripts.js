@@ -56,29 +56,20 @@ window.closeSidebar = function () {
 
 // Add active state to sidebar nav links
 window.addActiveState = function () {
-    let activatedPath = window.location.pathname.match(/([\w-]+\.html)/);
-    activatedPath = activatedPath ? activatedPath[0] : 'index.html';
+    const path = window.location.pathname.toLowerCase();
 
-    const targetAnchors = document.body.querySelectorAll('[href="' + activatedPath + '"].nav-link');
+    const navLinks = document.querySelectorAll('.nav-link');
 
-    targetAnchors.forEach(targetAnchor => {
-        let parentNode = targetAnchor.parentNode;
-        while (parentNode !== null && parentNode !== document.documentElement) {
-            if (parentNode.classList.contains('collapse')) {
-                parentNode.classList.add('show');
-                const parentNavLink = document.body.querySelector(
-                    '[data-bs-target="#' + parentNode.id + '"]'
-                );
-                if (parentNavLink) {
-                    parentNavLink.classList.remove('collapsed');
-                    parentNavLink.classList.add('active');
-                }
-            }
-            parentNode = parentNode.parentNode;
+    navLinks.forEach(link => {
+        const href = link.getAttribute('href').toLowerCase();
+        if (href === path) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
         }
-        targetAnchor.classList.add('active');
     });
 };
+
 
 // Close bootstrap modal
 window.closeModal = function (modalId) {

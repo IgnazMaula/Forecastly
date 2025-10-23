@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace Forecastly.Web.Pages
 {
-    public partial class Home : ComponentBase
+    public partial class WeatherForecast : ComponentBase
     {
         [Inject] protected ApiService ApiService { get; set; }
         [Inject] private ToastService Toast { get; set; }

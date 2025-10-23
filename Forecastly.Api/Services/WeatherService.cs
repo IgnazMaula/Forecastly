@@ -17,72 +17,91 @@ namespace Forecastly.Api.Services
 
         public async Task<WeatherDTO> GetWeatherAsync(string cityName)
         {
-            // Option 1: Mocked response for offline/testing
-            if (string.IsNullOrEmpty(_configuration["OpenWeather:ApiKey"]))
+            // Use mocked response if API key is missing or cityName is empty
+            if (string.IsNullOrEmpty(_configuration["OpenWeather:ApiKey"]) || string.IsNullOrWhiteSpace(cityName))
             {
                 return GetMockedWeather(cityName);
             }
 
-            // Option 2: Call OpenWeatherMap
-            string baseUrl = _configuration["OpenWeather:BaseUrl"];
-            string apiKey = _configuration["OpenWeather:ApiKey"];
-            string url = $"{baseUrl}?q={cityName}&appid={apiKey}&units=imperial";
+            // Call OpenWeatherMap
+            try
+            {
+                string baseUrl = _configuration["OpenWeather:BaseUrl"];
+                string apiKey = _configuration["OpenWeather:ApiKey"];
+                string url = $"{baseUrl}?q={cityName}&appid={apiKey}&units=imperial";
 
-            var response = await _httpClient.GetAsync(url);
-            if (!response.IsSuccessStatusCode)
-                throw new Exception($"Weather API error: {response.ReasonPhrase}");
+                var response = await _httpClient.GetAsync(url);
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"Weather API error: {response.ReasonPhrase}");
+                }
 
-            var json = await response.Content.ReadAsStringAsync();
-            var doc = JsonDocument.Parse(json);
+                var json = await response.Content.ReadAsStringAsync();
+                var doc = JsonDocument.Parse(json);
 
-            var info = new WeatherDTO
+                return ParseWeatherJson(doc);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Weather API error: {ex.Message}");
+            }
+        }
+
+        internal WeatherDTO ParseWeatherJson(JsonDocument doc)
+        {
+            var main = doc.RootElement.GetProperty("main");
+            var wind = doc.RootElement.GetProperty("wind");
+            var sys = doc.RootElement.GetProperty("sys");
+            var weatherArray = doc.RootElement.GetProperty("weather")[0];
+            var clouds = doc.RootElement.GetProperty("clouds");
+            var coord = doc.RootElement.GetProperty("coord");
+
+            double tempF = main.GetProperty("temp").GetDouble();
+            double humidity = main.GetProperty("humidity").GetDouble();
+
+            return new WeatherDTO
             {
                 City = doc.RootElement.GetProperty("name").GetString(),
-                Country = doc.RootElement.GetProperty("sys").GetProperty("country").GetString(),
+                Country = sys.GetProperty("country").GetString(),
                 TimeUtc = DateTime.UtcNow,
 
                 // Temperature
-                TempF = doc.RootElement.GetProperty("main").GetProperty("temp").GetDouble(),
-                TempC = FahrenheitToCelsius(doc.RootElement.GetProperty("main").GetProperty("temp").GetDouble()),
-                FeelsLikeF = doc.RootElement.GetProperty("main").GetProperty("feels_like").GetDouble(),
-                FeelsLikeC = FahrenheitToCelsius(doc.RootElement.GetProperty("main").GetProperty("feels_like").GetDouble()),
-                TempMinF = doc.RootElement.GetProperty("main").GetProperty("temp_min").GetDouble(),
-                TempMinC = FahrenheitToCelsius(doc.RootElement.GetProperty("main").GetProperty("temp_min").GetDouble()),
-                TempMaxF = doc.RootElement.GetProperty("main").GetProperty("temp_max").GetDouble(),
-                TempMaxC = FahrenheitToCelsius(doc.RootElement.GetProperty("main").GetProperty("temp_max").GetDouble()),
+                TempF = tempF,
+                TempC = FahrenheitToCelsius(tempF),
+                FeelsLikeF = main.GetProperty("feels_like").GetDouble(),
+                FeelsLikeC = FahrenheitToCelsius(main.GetProperty("feels_like").GetDouble()),
+                TempMinF = main.GetProperty("temp_min").GetDouble(),
+                TempMinC = FahrenheitToCelsius(main.GetProperty("temp_min").GetDouble()),
+                TempMaxF = main.GetProperty("temp_max").GetDouble(),
+                TempMaxC = FahrenheitToCelsius(main.GetProperty("temp_max").GetDouble()),
 
                 // Atmospheric data
-                Pressure = doc.RootElement.GetProperty("main").GetProperty("pressure").GetInt32(),
-                Humidity = doc.RootElement.GetProperty("main").GetProperty("humidity").GetInt32(),
-                DewPoint = CalculateDewPoint(
-                    doc.RootElement.GetProperty("main").GetProperty("temp").GetDouble(),
-                    doc.RootElement.GetProperty("main").GetProperty("humidity").GetDouble()
-                ),
+                Pressure = main.GetProperty("pressure").GetInt32(),
+                Humidity = (int)humidity,
+                DewPoint = CalculateDewPoint(tempF, humidity),
                 Visibility = doc.RootElement.GetProperty("visibility").GetInt32(),
 
                 // Wind
-                WindSpeed = doc.RootElement.GetProperty("wind").GetProperty("speed").GetDouble(),
-                WindDirection = doc.RootElement.GetProperty("wind").GetProperty("deg").GetInt32(),
+                WindSpeed = wind.GetProperty("speed").GetDouble(),
+                WindDirection = wind.GetProperty("deg").GetInt32(),
 
                 // Weather conditions
-                SkyMain = doc.RootElement.GetProperty("weather")[0].GetProperty("main").GetString(),
-                SkyDescription = doc.RootElement.GetProperty("weather")[0].GetProperty("description").GetString(),
-                Cloudiness = doc.RootElement.GetProperty("clouds").GetProperty("all").GetInt32(),
-                Icon = doc.RootElement.GetProperty("weather")[0].GetProperty("icon").GetString(),
+                SkyMain = weatherArray.GetProperty("main").GetString(),
+                SkyDescription = weatherArray.GetProperty("description").GetString(),
+                Cloudiness = clouds.GetProperty("all").GetInt32(),
+                Icon = weatherArray.GetProperty("icon").GetString(),
 
                 // Sunrise / Sunset
-                Sunrise = DateTimeOffset.FromUnixTimeSeconds(doc.RootElement.GetProperty("sys").GetProperty("sunrise").GetInt64()).UtcDateTime,
-                Sunset = DateTimeOffset.FromUnixTimeSeconds(doc.RootElement.GetProperty("sys").GetProperty("sunset").GetInt64()).UtcDateTime,
+                Sunrise = DateTimeOffset.FromUnixTimeSeconds(sys.GetProperty("sunrise").GetInt64()).UtcDateTime,
+                Sunset = DateTimeOffset.FromUnixTimeSeconds(sys.GetProperty("sunset").GetInt64()).UtcDateTime,
 
                 // Coordinates
-                Longitude = doc.RootElement.GetProperty("coord").GetProperty("lon").GetDouble(),
-                Latitude = doc.RootElement.GetProperty("coord").GetProperty("lat").GetDouble()
+                Longitude = coord.GetProperty("lon").GetDouble(),
+                Latitude = coord.GetProperty("lat").GetDouble()
             };
-
-            return info;
         }
 
-        private WeatherDTO GetMockedWeather(string cityName)
+        internal WeatherDTO GetMockedWeather(string cityName)
         {
             double tempF = 75;
             double humidity = 50;
@@ -128,16 +147,23 @@ namespace Forecastly.Api.Services
             };
         }
 
-        private double FahrenheitToCelsius(double tempF)
+        public double FahrenheitToCelsius(double tempF)
         {
             double tempC = (tempF - 32) * 5 / 9;
             return Math.Round(tempC, 2);
         }
 
-        private double CalculateDewPoint(double tempF, double humidity)
+        public double CalculateDewPoint(double tempF, double humidity)
         {
             double tempC = FahrenheitToCelsius(tempF);
-            double dewPoint = tempC - ((100 - humidity) / 5.0);
+
+            // Magnus formula constants
+            double a = 17.27;
+            double b = 237.7;
+
+            double alpha = ((a * tempC) / (b + tempC)) + Math.Log(humidity / 100.0);
+            double dewPoint = (b * alpha) / (a - alpha);
+
             return Math.Round(dewPoint, 2);
         }
     }

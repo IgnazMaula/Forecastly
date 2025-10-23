@@ -1,4 +1,5 @@
 ﻿@inject IJSRuntime JS
+@inject NavigationManager Navigation
 
 <Router AppAssembly="@typeof(App).Assembly">
     <Found Context="routeData">
@@ -14,6 +15,7 @@
 </Router>
 
 @code {
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)

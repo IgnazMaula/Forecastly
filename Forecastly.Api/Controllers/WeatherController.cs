@@ -18,7 +18,9 @@ namespace Forecastly.Api.Controllers
         public async Task<IActionResult> GetWeather(string cityName)
         {
             if (string.IsNullOrWhiteSpace(cityName))
+            {
                 return BadRequest("City name is required.");
+            }
 
             try
             {

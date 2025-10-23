@@ -7,11 +7,10 @@
     <Row>
         <Column>
             <Card>
-                <CardHeader>Location</CardHeader>
                 <CardBody>
                     <Row>
                         <Column class="col-sm-6">
-                            <label>Select Country</label>
+                            <label><b>Country</b></label>
                             <BlazoredTypeahead SearchMethod="SearchCountries"
                                                TItem="CountryDTO"
                                                TValue="CountryDTO"
@@ -34,7 +33,7 @@
                             </BlazoredTypeahead>
                         </Column>
                         <Column class="col-sm-6">
-                            <label>Select City</label>
+                            <label><b>City</b></label>
                             <BlazoredTypeahead @key="SelectedCountry?.Iso2"
                                                SearchMethod="SearchCities"
                                                TItem="string"

@@ -7,7 +7,6 @@ namespace Forecastly.Api.Services
     public interface ICountryService
     {
         Task<List<CountryDTO>> GetCountriesAsync();
-
         Task<List<string>> GetCitiesByCountryCodeAsync(string countryCode);
     }
 }
